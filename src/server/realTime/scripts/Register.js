@@ -64,7 +64,7 @@ Register.prototype.isOurs = function isOurs (room, callback) {
 		port: config.service.loadbalancer.port,
 		method: "GET",
 		path: "/isourroom?room=" + encodeURIComponent(room) + "&id=" + encodeURIComponent(this.id),
-		rejectUnauthorized: this.server.indexOf('localhost') !== 0
+		rejectUnauthorized: config.insecure
 	}, function (res) {
 		res.on("data", function (chunk) {
 			data = JSON.parse(chunk);
@@ -91,7 +91,7 @@ Register.prototype.register = function register () {
 		port: config.service.loadbalancer.port,
 		method: "GET",
 		path: "/register?key=" + encodeURIComponent(this.key) + "&url=" + encodeURIComponent(this.ip + ":" + this.port),
-		rejectUnauthorized: this.server.indexOf('localhost') !== 0
+		rejectUnauthorized: config.insecure
 	}, function (res) {
 		res.on("data", function (chunk) {
 			data = JSON.parse(chunk);
@@ -109,6 +109,8 @@ Register.prototype.register = function register () {
 	}.bind(this));
 
 	req.on("error", function (e) {
+		console.log(config.insecure);
+		
 		throw e.message;
 	});
 
@@ -147,7 +149,7 @@ Register.prototype.updatePlayerCount = function updatePlayerCount () {
 		port: config.service.loadbalancer.port,
 		method: "GET",
 		path: "/update?id=" + encodeURIComponent(this.id) + "&rooms=" + JSON.stringify(rooms),
-		rejectUnauthorized: this.server.indexOf('localhost') !== 0
+		rejectUnauthorized: config.insecure
 	}, function (res) {
 		res.on("data", function (chunk) {
 			data = JSON.parse(chunk);
